@@ -55,7 +55,6 @@ test = False  # True or False
 ## Requirements
 + [itertools](https://docs.python.org/3/library/itertools.html)
 + [rasterio](www.pip.com/rasterio)
-+ [numpy](https://pypi.org/project/numpy/)
 + [pandas](https://pypi.org/project/pandas/)
 + [GDAL](https://pypi.org/project/GDAL/)
 + [numpy](https://pypi.org/project/numpy/)
