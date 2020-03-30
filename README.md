@@ -52,7 +52,7 @@ test = False  # True or False
 
 ## Documentation of modules
 
-The documentation of the differet submoduls can be found here:
+The documentation of the submoduls can be found here:
 https://premo.readthedocs.io/en/latest/
 
 ## Requirements
