@@ -1,5 +1,5 @@
 # PreMo - Predictive modelling Python package
-This Python script were created and used to calculate predictive models for an archaeological study about viticulture in ancient Spain. The approach was to take a data set (point locations) of existing archeological sites and to determine the underlying factors of their distribution. Therefore the script predicts zones of high suitability that were associated with Roman viticulture, based on the location characteristics of the sites.
+This Python scripts were created and used to calculate predictive models for an archaeological study about viticulture in ancient Spain. The approach was to take a data set (point locations) of existing archeological sites and to determine the underlying factors of their distribution. Therefore the script predicts zones of high suitability that were associated with Roman viticulture, based on the location characteristics of the sites.
 As predictor variables different rasters (for example a digital elevation model and cost distances to ancient settlements) of the study area were used.
 
 
