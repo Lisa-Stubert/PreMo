@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>set_data_paths &mdash; PreMo 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PreMo
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../premo/modules.html">modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../premo/run_modelling.html">run_modelling module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../premo/set_data_paths.html">set_data_paths module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreMo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>set_data_paths</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for set_data_paths</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">data_input.py&lt;br&gt;</span>
+<span class="sd">python 3.6.7&lt;br&gt;</span>
+<span class="sd">Definition of a function that returns the paths to the data and&lt;br&gt;</span>
+<span class="sd">a function that makes subsets out of the raster dictionary&lt;br&gt;</span>
+<span class="sd">@author: Lisa Stubert&lt;br&gt;</span>
+<span class="sd">@date: 2019-05-30&lt;br&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+
+<div class="viewcode-block" id="data_input"><a class="viewcode-back" href="../premo/set_data_paths.html#set_data_paths.data_input">[docs]</a><span class="k">def</span> <span class="nf">data_input</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Return data paths</span>
+
+<span class="sd">    This script defines the data basis used. The correct paths to the predictor variable rasters have to be defined here.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    all_raster_data: dict</span>
+<span class="sd">        Names an paths of predictor variable rasters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># set your working directory (location of the PreMo folder)</span>
+    <span class="n">working_dir</span> <span class="o">=</span> <span class="s1">&#39;/Users/User/Desktop/PreMo/&#39;</span>
+
+    <span class="c1"># set directory path to buffered sites (inside the data folder)</span>
+    <span class="n">buffer_dir</span> <span class="o">=</span> <span class="s1">&#39;example_data_set/buffered_sites/&#39;</span>
+
+    <span class="c1"># generate dictionary with predictor variables and their directory paths (inside the data folder)</span>
+    <span class="c1">#Note : keys must me limited to max. 10 characters</span>
+    <span class="n">all_raster_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># topography:</span>
+        <span class="c1"># Note: Topography variables must be named with t_ in the beginning, because the algorithm only recognize them as topography variables by there name. This is import when variables are selected automatically by thresholds.</span>
+        <span class="s1">&#39;t_slope&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;example_data_set/topography/slope.tif&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;t_insola&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;example_data_set/topography/direct_insolation.tif&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;t_wind&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;example_data_set/topography/wind_exposition.tif&#39;</span><span class="p">},</span>
+
+        <span class="c1"># cost distances:</span>
+        <span class="c1"># Note: Cost distance must be named with c_ in the beginning, because the algorithm only recognize them as cost distances by there name. This is import when variables are selected automatically by thresholds.</span>
+        <span class="s1">&#39;c_coast&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;example_data_set/distance_cost/coastline.tif&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;c_prim_set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;example_data_set/distance_cost/primary_settlements.tif&#39;</span><span class="p">},</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span><span class="p">(</span><span class="n">all_raster_data</span><span class="p">,</span> <span class="n">buffer_dir</span><span class="p">,</span> <span class="n">working_dir</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="rasterfilter"><a class="viewcode-back" href="../premo/set_data_paths.html#set_data_paths.rasterfilter">[docs]</a><span class="k">def</span> <span class="nf">rasterfilter</span><span class="p">(</span><span class="n">all_raster_data</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get subset out of raster dictionary</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    all_raster_data: dict</span>
+<span class="sd">    variables: list</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    raster_data: dict</span>
+<span class="sd">        Subset of raster dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">raster_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">i</span><span class="p">,</span> <span class="n">all_raster_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_raster_data</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">)])</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">raster_data</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Lisa Stubert
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

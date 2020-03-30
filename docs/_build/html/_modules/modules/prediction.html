@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>modules.prediction &mdash; PreMo 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PreMo
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../premo/modules.html">modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../premo/run_modelling.html">run_modelling module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../premo/set_data_paths.html">set_data_paths module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PreMo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>modules.prediction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for modules.prediction</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">prediction.py&lt;/br&gt;</span>
+<span class="sd">python 3.6.7&lt;/br&gt;</span>
+<span class="sd">@author: Lisa Stubert&lt;/br&gt;</span>
+<span class="sd">@date: 2019-05-30&lt;/br&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">gdal</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span>
+
+
+<div class="viewcode-block" id="prediction"><a class="viewcode-back" href="../../premo/modules.html#modules.prediction.prediction">[docs]</a><span class="k">def</span> <span class="nf">prediction</span><span class="p">(</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">raster_data</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">,</span> <span class="n">result_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Predictive Model</span>
+<span class="sd">    </span>
+<span class="sd">    This script takes the reclassified rasters and the calculated weighting factors. The result is a raster which shows the suitability.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    working_dir: str</span>
+<span class="sd">        Working directory</span>
+<span class="sd">    raster_data: dict</span>
+<span class="sd">        Names and paths of the predictore variable rasters</span>
+<span class="sd">    weighting: str</span>
+<span class="sd">        Weighting witch will be multiplied with the raster values</span>
+<span class="sd">    buffer_size:</span>
+<span class="sd">        str</span>
+<span class="sd">    result_name: str</span>
+<span class="sd">        Name of the model</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This function needs the output of the function &#39;reclassify_raster&#39;, this means multiple rasters, and the output of the function &#39;weighting_calculation&#39;, a Excelsheet located in working_dir + &#39;results/statistics/&#39;.</span>
+<span class="sd">    The output file is saved as follows.</span>
+
+<span class="sd">    Type: Raster .tif</span>
+<span class="sd">    File location: working_dir + &#39;results/&#39;</span>
+<span class="sd">    File name: &#39;suitability_result&#39; + result_name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># Put the names of the rasters out of the dictionairy into a list</span>
+    <span class="n">rasternames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raster_data</span><span class="p">:</span>
+        <span class="n">rasternames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+    <span class="c1"># set path to reclassified rasters</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s2">&quot;tmp&quot;</span> <span class="o">+</span> <span class="s1">&#39;/reclassified/&#39;</span>
+    <span class="c1"># set path to table with weighting factors</span>
+    <span class="n">weighting_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">working_dir</span> <span class="o">+</span> 
+        <span class="s1">&#39;/results/statistics/weighting&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate suitability </span>
+    <span class="c1"># load the first raster</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">GetDriverByName</span><span class="p">(</span><span class="s1">&#39;GTiff&#39;</span><span class="p">)</span>
+    <span class="n">raster</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">rasternames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_reclassified&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;.tif&#39;</span><span class="p">)</span>
+    <span class="n">band</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">raster_array</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">()</span>
+
+    <span class="c1"># Multiply every value with personal weighting factor</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Multiply &#39;</span> <span class="o">+</span> <span class="n">rasternames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; with weighting factor: &#39;</span> <span class="o">+</span>
+          <span class="nb">str</span><span class="p">(</span><span class="n">weighting_df</span><span class="p">[</span><span class="n">rasternames</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">weighting</span><span class="p">]))</span>
+    <span class="n">raster_array</span> <span class="o">=</span> <span class="n">raster_array</span> <span class="o">*</span> <span class="n">weighting_df</span><span class="p">[</span><span class="n">rasternames</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">weighting</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Add up: &#39;</span> <span class="o">+</span> <span class="n">rasternames</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">raster_array_sum</span> <span class="o">=</span> <span class="n">raster_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># loop over remaining rasters and add them up</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">rasternames</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="n">rasternames</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">continue</span>
+        <span class="c1"># load raster</span>
+        <span class="n">raster</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">item</span> <span class="o">+</span> <span class="s1">&#39;_reclassified&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span><span class="s1">&#39;.tif&#39;</span><span class="p">)</span>
+        <span class="n">band</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">raster_array</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">()</span>
+
+        <span class="c1"># Multiply every value with personal weighting factor</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Multiply &#39;</span> <span class="o">+</span> <span class="n">item</span> <span class="o">+</span> <span class="s1">&#39; with weighting factor: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">weighting_df</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="n">weighting</span><span class="p">]))</span>
+        <span class="n">raster_array</span> <span class="o">=</span> <span class="n">raster_array</span> <span class="o">*</span> <span class="n">weighting_df</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="n">weighting</span><span class="p">]</span>
+        <span class="c1"># and add up values</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Add up: &#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">raster_array_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">raster_array_sum</span><span class="p">,</span> <span class="n">raster_array</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># convert integer values to float values  </span>
+    <span class="n">raster_array_sum</span> <span class="o">=</span> <span class="n">raster_array_sum</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Highest value: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">raster_array_sum</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Lowest value: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">raster_array_sum</span><span class="p">)))</span>
+    <span class="c1"># normalize the raster values by dividing by the highest value</span>
+    <span class="n">raster_array_sum_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">raster_array_sum</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">raster_array_sum</span><span class="p">))</span>
+
+    <span class="c1"># Export the final raster</span>
+    <span class="c1"># create new raster</span>
+    <span class="n">raster_reclass</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span><span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span>
+                                   <span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">RasterXSize</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">RasterYSize</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">gdal</span><span class="o">.</span><span class="n">GDT_Float32</span><span class="p">)</span>
+    <span class="n">raster_reclass</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">WriteArray</span><span class="p">(</span><span class="n">raster_array_sum_norm</span><span class="p">)</span>
+    <span class="c1"># get and set the spatial ref system</span>
+    <span class="n">proj</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">GetProjection</span><span class="p">()</span>
+    <span class="n">georef</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">GetGeoTransform</span><span class="p">()</span>
+    <span class="n">raster_reclass</span><span class="o">.</span><span class="n">SetProjection</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
+    <span class="n">raster_reclass</span><span class="o">.</span><span class="n">SetGeoTransform</span><span class="p">(</span><span class="n">georef</span><span class="p">)</span>
+    <span class="c1"># clear variable</span>
+    <span class="n">raster_reclass</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Resample the result raster to the size of buffer diameter</span>
+    <span class="c1">#if buffer_size is &#39;flex&#39;:</span>
+    <span class="c1">#    buffer_size = &#39;250&#39; </span>
+    <span class="n">call</span><span class="p">([</span><span class="s1">&#39;gdalwarp&#39;</span><span class="p">,</span> <span class="s1">&#39;-overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;-tr&#39;</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">,</span><span class="s1">&#39;-of&#39;</span><span class="p">,</span> <span class="s1">&#39;GTiff&#39;</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;.tif&#39;</span><span class="p">,</span>
+    <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;_resampled.tif&#39;</span><span class="p">])</span>
+
+    <span class="c1"># If needed : </span>
+    <span class="c1"># clip raster to landmass by a shapefile that masks the ocean and set nodatavalue to -9999</span>
+    <span class="n">path_to_mask</span> <span class="o">=</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;data&#39;</span> <span class="o">+</span> <span class="s1">&#39;/example_data_set/mask_for_no_data_values/oceanmask.shp&#39;</span>
+
+    <span class="n">call</span><span class="p">([</span><span class="s1">&#39;gdalwarp&#39;</span><span class="p">,</span> <span class="s1">&#39;-overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;-of&#39;</span><span class="p">,</span> <span class="s1">&#39;GTiff&#39;</span><span class="p">,</span> <span class="s1">&#39;-cutline&#39;</span><span class="p">,</span> <span class="n">path_to_mask</span><span class="p">,</span> <span class="s1">&#39;-crop_to_cutline&#39;</span><span class="p">,</span> <span class="s1">&#39;-dstnodata&#39;</span><span class="p">,</span> <span class="s1">&#39;-9999.0&#39;</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;_resampled.tif&#39;</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;_resampled_cut.tif&#39;</span><span class="p">])</span>
+
+
+
+    <span class="c1"># delete the no longer required uncut raster</span>
+    <span class="n">call</span><span class="p">([</span><span class="s1">&#39;rm&#39;</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;results/suitability_result&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;_resampled.tif&#39;</span><span class="p">])</span>
+
+    <span class="c1"># delete the no longer required reclassified rasters</span>
+    <span class="n">call</span><span class="p">([</span><span class="s1">&#39;rm&#39;</span><span class="p">,</span> <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;data/reclassified/*&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Model prediction finished</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Lisa Stubert
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

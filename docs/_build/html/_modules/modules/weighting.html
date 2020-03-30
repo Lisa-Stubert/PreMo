@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>modules.weighting &mdash; PreMo 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PreMo
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../premo/modules.html">modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../premo/run_modelling.html">run_modelling module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../premo/set_data_paths.html">set_data_paths module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PreMo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>modules.weighting</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for modules.weighting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">weighting.py&lt;br&gt;</span>
+<span class="sd">python 3.6.7&lt;br&gt;</span>
+<span class="sd">Definition of a function to get raster values within buffers&lt;br&gt;</span>
+<span class="sd">@author: Lisa Stubert&lt;br&gt;</span>
+<span class="sd">@date: 2019-05-30   &lt;br&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">gdal</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">LA</span>
+
+
+<div class="viewcode-block" id="weighting_calculation"><a class="viewcode-back" href="../../premo/modules.html#modules.weighting.weighting_calculation">[docs]</a><span class="k">def</span> <span class="nf">weighting_calculation</span><span class="p">(</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">result_name</span><span class="p">,</span> <span class="n">df_boxplot_statistics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Weighting</span>
+<span class="sd">    </span>
+<span class="sd">    This script takes the boxplots statistics and uses them to calculate weighting factors w1 and w2, as described in Vogel et. al 2015. The result is a table with all weighting factors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    working_dir: str</span>
+<span class="sd">        Working directory</span>
+<span class="sd">    result_name: str</span>
+<span class="sd">        Name of the model</span>
+<span class="sd">    df_boxplot_statistics: dataframe</span>
+<span class="sd">        Contains calculated boxplot statistics</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This is the fourth function called by the run_model.py script. It needs the output from the function &#39;boxplots&#39;, a Excelsheet located in working_dir + &#39;results/statistics/&#39;.</span>
+<span class="sd">    The output file is saved as follows.</span>
+
+<span class="sd">    Type: Excelsheet xlsx</span>
+<span class="sd">    File location: working_dir + &#39;/results/statistics/&#39; </span>
+<span class="sd">    File name: &#39;weighting&#39; + result_name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># table with boxplot statistics</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df_boxplot_statistics</span>
+    
+    <span class="c1"># save weighting w0</span>
+    <span class="n">w0</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">w0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;w0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">w0</span>
+
+    <span class="c1"># calculate weighting w1</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">w1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;iqr_norm&#39;</span><span class="p">]))</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;w1&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">w1</span>
+
+    <span class="c1"># calculate weighting wE</span>
+    <span class="n">w2</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">w2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;std_dev&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="s1">&#39;range&#39;</span><span class="p">])))</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;w2&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">w2</span>
+
+    <span class="c1"># calculate w3 (AHP after Saaty), but with standart deviation instead of normalized iqr</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std_dev_norm&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std_dev_norm&#39;</span><span class="p">]))</span>
+    <span class="n">w3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std_dev_norm&#39;</span><span class="p">]:</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">item2</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std_dev_norm&#39;</span><span class="p">]:</span>
+            <span class="c1"># inverse ranking</span>
+            <span class="n">w3</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">item2</span><span class="o">/</span><span class="n">item</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">w3</span> <span class="o">=</span> <span class="n">w3</span><span class="o">*</span><span class="n">w3</span>
+    <span class="n">w3</span> <span class="o">=</span> <span class="n">w3</span><span class="o">*</span><span class="n">w3</span>
+    <span class="n">w3</span> <span class="o">=</span> <span class="n">w3</span> <span class="o">*</span> <span class="n">w3</span>
+    <span class="n">liste</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std_dev_norm&#39;</span><span class="p">])):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std_dev_norm&#39;</span><span class="p">])):</span>
+            <span class="n">v</span> <span class="o">+=</span> <span class="n">w3</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+        <span class="n">liste</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">neu</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">liste</span><span class="p">:</span>
+        <span class="n">neu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">liste</span><span class="p">))</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;w3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">neu</span>
+
+    <span class="c1">#Export table with weighting factors</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">working_dir</span> <span class="o">+</span> <span class="s1">&#39;/results/statistics/weighting&#39;</span> <span class="o">+</span> <span class="n">result_name</span> <span class="o">+</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">)</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculation of weightings finished</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Lisa Stubert
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
