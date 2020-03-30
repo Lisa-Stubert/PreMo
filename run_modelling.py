@@ -14,7 +14,7 @@ from modules.process import modelling_process
 
 # insert all combinations of predictor variables, used to calculate models (as dictionary)
 combinations = {
-    "example": ['t_slope', 't_wind', 't_insola', 'c_rivers', 'c_coast', 'c_pri_set', 'c_sec_set', 'c_roads'],
+    "example": ['t_slope', 't_wind', 't_insola', 'c_coast', 'c_prim_set'],
 }
 
 # set parameters 
@@ -23,7 +23,7 @@ buffer_sizes = ['50','100'] # set the size(s) of your buffered site location(s)
 weightings = ['w1','w2'] # w0 = no weighting, w1 = weighting with IQRnorm, w2 = weighting wE after Ejstrud, w3 = weighting after Saaty
 
 # set thresholds if you want to calculate models by automated variable selection (if you want to calculate models by experts selection, set statistic threshold to 100 and correlation threshold to 1) 
-statistic_thresholds = [10]
+statistic_thresholds = [100]
 statistic_threshold_types = ['iqr_norm'] 
 corr_thresholds = [1]
 

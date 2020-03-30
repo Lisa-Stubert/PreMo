@@ -39,9 +39,6 @@ def data_input():
         # Note: Cost distance must be named with c_ in the beginning, because the algorithm only recognize them as cost distances by there name. This is import when variables are selected automatically by thresholds.
         'c_coast': {'path': 'example_data_set/distance_cost/coastline.tif'},
         'c_prim_set': {'path': 'example_data_set/distance_cost/primary_settlements.tif'},
-        'c_sec_set': {'path': 'example_data_set/distance_cost/secondary_settlements.tif'},
-        'c_roads': {'path': 'example_data_set/distance_cost/roads.tif'},
-        'c_rivers': {'path': 'example_data_set/distance_cost/rivers.tif'},
     }
     
     return(all_raster_data, buffer_dir, working_dir)
