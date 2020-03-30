@@ -21,7 +21,7 @@ def data_input():
     """
 
     # set your working directory (location of the PreMo folder)
-    working_dir = '/Users/Lisa/Desktop/PreMo/'
+    working_dir = '/Users/User/Desktop/PreMo/'
 
     # set directory path to buffered sites (inside the data folder)
     buffer_dir = 'example_data_set/buffered_sites/'
