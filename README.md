@@ -52,19 +52,18 @@ test = False  # True or False
 
 ## Documentation of modules
 
+The documentation of the differet submoduls can be found here:
+https://premo.readthedocs.io/en/latest/
+
 ## Requirements
-+ [itertools](https://docs.python.org/3/library/itertools.html)
 + [rasterio](www.pip.com/rasterio)
 + [pandas](https://pypi.org/project/pandas/)
 + [GDAL](https://pypi.org/project/GDAL/)
 + [numpy](https://pypi.org/project/numpy/)
 + [sklearn](https://pypi.org/project/scikit-learn/)
 + [shapely](https://pypi.org/project/Shapely/)
-+ [subprocess](https://docs.python.org/3/library/subprocess.html)
-+ [json](https://docs.python.org/3/library/json.html)
 + [statistics](https://pypi.org/project/statistics/)
 + [seaborn](https://pypi.org/project/seaborn/)
-+ [os](https://docs.python.org/3/library/os.html)
 
 
 Please feel free to contact me for bug reports, questions and comments.
