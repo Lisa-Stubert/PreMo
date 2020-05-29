@@ -3,16 +3,14 @@
 This Python scripts were created and used to calculate predictive models for an archaeological study about viticulture in ancient Spain: [Viticulture in the Laetanian Region (Spain) during the Roman Period: Predictive Modelling and Geomatic Analysis.](https://www.mdpi.com/2076-3263/10/6/206/htm) The approach was to take a data set (point locations) of existing archeological sites and to determine the underlying factors of their distribution. Therefore the script predicts zones of high suitability that were associated with Roman viticulture, based on the location characteristics of the sites.
 As predictor variables different rasters (for example a digital elevation model and cost distances to ancient settlements) of the study area were used.
 
-
-## What can this approach be used for
-The script makes it possible to automate analyses that would otherwise have to be carried out in a classic GIS using many steps. The application of this predictive modelling algorithm is not limited to the specific field of archaeology. In contrast, this methodology may also be used in other scientific fields, such as ecology to model species distributions or in economic geography for production site analysis.
-
-## Licence
+## Licence and publication
 [![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
 Please cite the paper when using the code.
 
 Stubert, L.; Martín i Oliveras, A.; Märker, M.; Schernthanner, H.; Vogel, S. Viticulture in the Laetanian Region (Spain) during the Roman Period: Predictive Modelling and Geomatic Analysis. Geosciences 2020, 10, 206.
 
+## What can this approach be used for
+The script makes it possible to automate analyses that would otherwise have to be carried out in a classic GIS using many steps. The application of this predictive modelling algorithm is not limited to the specific field of archaeology. In contrast, this methodology may also be used in other scientific fields, such as ecology to model species distributions or in economic geography for production site analysis.
 
 ## How it works
 The functionality of the predictive modelling algorithm is described in the study "Viticulture in the Laetanian Region (Spain) during the Roman Empire: Predictive modelling and spatial analysis".
