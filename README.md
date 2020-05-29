@@ -10,6 +10,7 @@ The script makes it possible to automate analyses that would otherwise have to b
 ## Licence
 [![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
 Please cite the paper when using the code.
+
 Stubert, L.; Martín i Oliveras, A.; Märker, M.; Schernthanner, H.; Vogel, S. Viticulture in the Laetanian Region (Spain) during the Roman Period: Predictive Modelling and Geomatic Analysis. Geosciences 2020, 10, 206.
 
 
